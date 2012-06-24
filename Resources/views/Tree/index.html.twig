@@ -1,0 +1,2 @@
+<div id="neutron-tree-{{ tree.name }}"></div>
+<span class="neutron-tree" style="display:none">{{ tree.toArray()|merge({'data_uri' : url('neutron_tree_data', {'name': tree.name})})|json_encode }}</span>

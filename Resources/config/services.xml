@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    
+    <parameters>
+        <parameter key="neutron_tree.factory.class">Neutron\TreeBundle\Tree\TreeFactory</parameter>
+        <parameter key="neutron_tree.tree_provider.contaner_aware.class">Neutron\TreeBundle\Tree\Provider\ContainerAwareProvider</parameter>
+        <parameter key="neutron_tree.twig.tree_extension.class">Neutron\TreeBundle\Twig\Extension\TreeExtension</parameter>
+    </parameters>
+
+    <services>
+        <service id="neutron_tree.factory" class="%neutron_tree.factory.class%" scope="request">
+            <argument type="service" id="neutron_assetic" />
+            <argument type="service" id="request" />
+            <argument>%neutron_tree.path_to_jstree%</argument>
+        </service>
+        
+        <service id="neutron_tree.tree_provider.container_aware" class="%neutron_tree.tree_provider.contaner_aware.class%">
+            <argument type="service" id="service_container" />
+            <argument type="collection"/>
+        </service>
+        
+        <service id="neutron.tree" alias="neutron_tree.tree_provider.container_aware" />
+        
+        <service id="neutron_tree.twig.tree_extension" class="%neutron_tree.twig.tree_extension.class%">
+            <argument type="service" id="service_container" />
+            <tag name="twig.extension"/>
+        </service>
+        
+    </services>
+    
+</container>
