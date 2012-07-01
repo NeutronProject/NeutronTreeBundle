@@ -18,7 +18,37 @@ jQuery(document).ready(function() {
 				 "progressive_unload": options.progressiveUnload,
 
 			},
-			"plugins" : options.plugins
+			'ui': (options.plugins.ui == 'undefined') ? {} : options.plugins.ui,
+			'contextmenu': { 
+				'items': function(){
+					var items = 
+					{
+						'ccp': false,
+						'rename': false,
+						'remove': false,
+					};
+					
+					if(jQuery.inArray('contextmenu', options.enabledPlugins)){
+						var createBtn = {
+							'create' : {
+								'label': options.plugins.contextmenu.createBtnLabel,
+								// The function to execute upon a click
+								'action'			: function (obj) { 
+									window.location = options.plugins.contextmenu.createBtnUri;
+								},
+								'_disabled' : options.plugins.contextmenu.isCreateBtnEnabled ? false : true,		
+
+							}
+						};
+						
+						$items = jQuery.extend(items, createBtn);
+					}
+
+					return items;
+				}
+				
+			},
+			"plugins" : jQuery.merge(['json_data', 'themes'], options.enabledPlugins)
 		});
 	});
 });

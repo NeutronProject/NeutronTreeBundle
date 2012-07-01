@@ -7,6 +7,7 @@
     
     <parameters>
         <parameter key="neutron_tree.factory.class">Neutron\TreeBundle\Tree\TreeFactory</parameter>
+        <parameter key="neutron_tree.plugin.factory.class">Neutron\TreeBundle\Tree\Plugin\PluginFactory</parameter>
         <parameter key="neutron_tree.tree_provider.contaner_aware.class">Neutron\TreeBundle\Tree\Provider\ContainerAwareProvider</parameter>
         <parameter key="neutron_tree.twig.tree_extension.class">Neutron\TreeBundle\Twig\Extension\TreeExtension</parameter>
     </parameters>
@@ -16,6 +17,10 @@
             <argument type="service" id="neutron_assetic" />
             <argument type="service" id="request" />
             <argument>%neutron_tree.path_to_jstree%</argument>
+        </service>
+        
+        <service id="neutron_tree.plugin.factory" class="%neutron_tree.plugin.factory.class%">
+            
         </service>
         
         <service id="neutron_tree.tree_provider.container_aware" class="%neutron_tree.tree_provider.contaner_aware.class%">

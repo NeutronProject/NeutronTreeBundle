@@ -18,6 +18,10 @@ namespace Neutron\TreeBundle\Tree;
  * @author Nikolay Georgiev <azazen09@gmail.com>
  * @since 1.0
  */
+use Gedmo\Exception\InvalidArgumentException;
+
+use Neutron\TreeBundle\Tree\Plugin\PluginInterface;
+
 class Tree implements TreeInterface
 {
     /**
@@ -31,9 +35,9 @@ class Tree implements TreeInterface
     protected $dataClass;
     
     /**
-     * @var array<string>
+     * @var array<PluginInterface>
      */
-    protected $plugins;
+    protected $plugins = array();
     
     /**
      * @var string
@@ -106,13 +110,56 @@ class Tree implements TreeInterface
     
     /**
      * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::hasPlugin()
+     */
+    public function hasPlugin($name)
+    {
+        return isset($this->plugins[$name]);
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::addPlugin()
+     */
+    public function addPlugin(PluginInterface $plugin)
+    {
+        if ($this->hasPlugin($plugin->getName())){
+            throw new \InvalidArgumentException(
+                sprintf('Tree plugin: "%s" already exists in the stack', $plugin->getName())
+            );
+        }
+        
+        $this->plugins[$plugin->getName()] = $plugin;
+        
+        return $this;
+    }
+    
+    /**
+     * (non-PHPdoc)
      * @see Neutron\TreeBundle\Tree.TreeInterface::setPlugins()
      */
     public function setPlugins(array $plugins)
     {
-        $this->plugins = $plugins;
+        foreach ($plugins as $plugin){
+            $this->addPlugin($plugin);
+        }
         
         return $this;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::getPlugin()
+     */
+    public function getPlugin($name)
+    {
+        if (!$this->hasPlugin($name)){
+            throw new \InvalidArgumentException(
+                sprintf('Tree plugin: "%s" does not exist in the stack', $name)
+            );
+        }
+        
+        return $this->plugins[$name];
     }
     
     /**
@@ -121,10 +168,59 @@ class Tree implements TreeInterface
      */
     public function getPlugins()
     {
-        $defaultPlugins = array('themes', 'json_data', 'ui');
-        $plugins = array_merge($defaultPlugins, $this->plugins);
+        return $this->plugins;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::getPluginNames()
+     */
+    public function getPluginNames()
+    {
+        $pluginNames = array();
         
-        return array_unique($plugins);
+        array_map(function(PluginInterface $plugin) use (&$pluginNames){
+            $pluginNames[] = $plugin->getName();
+        }, $this->getPlugins());
+        
+        return $pluginNames;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::getPluginsOptions()
+     */
+    public function getPluginsOptions()
+    {
+        $options = array();
+        
+        array_map(function(PluginInterface $plugin) use (&$options){
+            $options[$plugin->getName()] = $plugin->getOptions();
+        }, $this->getPlugins());
+        
+        return $options;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::removePlugin()
+     */
+    public function removePlugin($name)
+    {
+        unset($this->plugins[name]);
+        
+        return $this;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::clearPlugins()
+     */
+    public function clearPlugins()
+    {
+        $this->plugins = array();
+        
+        return $this;
     }
     
     /**
@@ -195,7 +291,8 @@ class Tree implements TreeInterface
     public function toArray()
     {
         $data['name'] = $this->getName();
-        $data['plugins'] = $this->getPlugins();
+        $data['enabledPlugins'] = $this->getPluginNames();
+        $data['plugins'] = $this->getPluginsOptions();
         $data['progressiveRender'] = $this->isProgressiveRenderEnabled();
         $data['progressiveUnload'] = $this->isProgressiveUnloadEnabled();
         

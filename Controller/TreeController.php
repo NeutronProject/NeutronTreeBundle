@@ -42,6 +42,7 @@ class TreeController extends Controller
     private function getNodes(TreeInterface $tree, $nodeId = null)
     {
         $class = $tree->getDataClass();
+        
         if (!class_exists($class)){
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist', $class));
         }
@@ -56,6 +57,7 @@ class TreeController extends Controller
             if (count($roots) == 0){
                 $entity = new $class;
                 $entity->setTitle($tree->getRootName());
+                $entity->setSlug($tree->getRootName());
                 $em->persist($entity);
                 $em->flush($entity);
                 

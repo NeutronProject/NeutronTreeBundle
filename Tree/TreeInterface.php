@@ -18,6 +18,8 @@ namespace Neutron\TreeBundle\Tree;
  * @since 1.0
  */
 
+use Neutron\TreeBundle\Tree\Plugin\PluginInterface;
+
 interface TreeInterface
 {
     /**
@@ -58,11 +60,39 @@ interface TreeInterface
     public function getDataClass();
     
     /**
+     * Adds tree plugin
+     * 
+     * Provides a fluent interface
+     * 
+     * @param PluginInterface $plugin
+     * @return \Neutron\TreeBundle\Tree\TreeInterface
+     */
+    public function addPlugin(PluginInterface $plugin);
+    
+    /**
+     * Gets tree plugin
+     * 
+     * @param string $name
+     * @return \Neutron\TreeBundle\Tree\Plugin\PluginInterface
+     * @throws \InvalidArgumentException
+     */
+    public function getPlugin($name);
+    
+    /**
+     * Checks if tree plugin exists
+     * 
+     * @param string $name
+     * @return boolean
+     */
+    public function hasPlugin($name);
+    
+    
+    /**
      * Sets jsTree plugins
      * 
      * Provides a fluent interface
      * 
-     * @param array $plugins
+     * @param array<PluginInterface> $plugins
      * @return \Neutron\TreeBundle\Tree\TreeInterface
      */
     public function setPlugins(array $plugins);
@@ -74,6 +104,40 @@ interface TreeInterface
      */
     public function getPlugins();
     
+    /**
+     * Gets name of tree pluguns
+     * 
+     * @return array<string>
+     */
+    public function getPluginNames();
+    
+    /**
+     * Converts all plugins in the stack to array
+     * 
+     * @return array
+     */
+    public function getPluginsOptions();
+    
+    
+    /**
+     * Removes tree plugin from the stack
+     * 
+     * Provides a fluent interface
+     * 
+     * @param string $name
+     * @return \Neutron\TreeBundle\Tree\TreeInterface
+     */
+    public function removePlugin($name);
+    
+    /**
+     * Clears all tree plugins
+     * 
+     * Provides a fluent interface
+     * 
+     * @return \Neutron\TreeBundle\Tree\TreeInterface
+     */
+    public function clearPlugins();
+ 
     /**
      * Sets root name
      * 
