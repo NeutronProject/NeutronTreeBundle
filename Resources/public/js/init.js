@@ -31,12 +31,13 @@ jQuery(document).ready(function() {
 					if(jQuery.inArray('contextmenu', options.enabledPlugins)){
 						var createBtn = {
 							'create' : {
-								'label': options.plugins.contextmenu.createBtnLabel,
-								// The function to execute upon a click
+								'label': options.plugins.contextmenu.createBtnOptions.label,
 								'action'			: function (obj) { 
-									window.location = options.plugins.contextmenu.createBtnUri;
+									var parentId = obj.attr('id').replace('li_', '');
+									var uri = decodeURIComponent(options.plugins.contextmenu.createBtnOptions.uri).replace('{parentId}', parentId);
+									window.location = uri;
 								},
-								'_disabled' : options.plugins.contextmenu.isCreateBtnEnabled ? false : true,		
+								'_disabled' : options.plugins.contextmenu.createBtnOptions.disabled,		
 
 							}
 						};

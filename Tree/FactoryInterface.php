@@ -12,7 +12,7 @@ namespace Neutron\TreeBundle\Tree;
 /**
  * Interface implemented by the factory to create jsTree
  *
- * @author Nikolay Georgiev <nikolay.georgiev@zend.bg>
+ * @author Nikolay Georgiev <azazen09@gmail.com>
  * @since 1.0
  */
 interface FactoryInterface
@@ -35,6 +35,16 @@ interface FactoryInterface
      * @param array $data
      * @return \Neutron\TreeBundle\Tree\TreeInterface
      */
-    public function createFromArray (array $data);
+    public function createTreeFromArray (array $data);
+    
+    /**
+     * Creates new instance of tree plugin
+     *
+     *
+     * @param string $plugin
+     * @return \Neutron\TreeBundle\Tree\Plugin\PluginInterface
+     * @throws \InvalidArgumentException
+     */
+    public function createPlugin($plugin);
 
 }

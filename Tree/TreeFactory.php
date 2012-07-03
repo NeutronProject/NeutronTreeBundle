@@ -85,12 +85,33 @@ class TreeFactory implements FactoryInterface
 
     /**
      * (non-PHPdoc)
-     * @see Neutron\TreeBundle\Tree.FactoryInterface::createFromArray()
+     * @see Neutron\TreeBundle\Tree.FactoryInterface::createTreeFromArray()
      */
-    public function createFromArray (Array $data)
+    public function createTreeFromArray (Array $data)
     {
         $name = isset($data['name']) ? $data['name'] : $name;
         
-        return $this->createDataGrid($name, $data);
+        return $this->createTree($name);
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.FactoryInterface::createPlugin()
+     */
+    public function createPlugin($plugin, array $options = array())
+    {
+    
+        switch (strtolower($plugin)){
+            case 'ui':
+                $plugin = '\Neutron\TreeBundle\Tree\Plugin\UI';
+                break;
+            case 'contextmenu':
+                $plugin = '\Neutron\TreeBundle\Tree\Plugin\ContextMenu';
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('Invalid plugin "%s"!',  $plugin));
+        }
+    
+        return new $plugin($options);
     }
 }
