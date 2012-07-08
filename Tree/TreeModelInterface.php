@@ -13,6 +13,14 @@ interface TreeModelInterface
     
     public function getSlug();
     
+    public function setEnabled($bool);
+  
+    public function isEnabled();
+    
+    public function setDisplayed($bool);
+    
+    public function isDisplayed();
+    
     public function setParent(TreeModelInterface $parent = null);
     
     public function getParent();

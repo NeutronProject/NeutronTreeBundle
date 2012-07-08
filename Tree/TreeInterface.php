@@ -18,6 +18,8 @@ namespace Neutron\TreeBundle\Tree;
  * @since 1.0
  */
 
+use Neutron\TreeBundle\Model\TreeManagerInterface;
+
 use Neutron\TreeBundle\Tree\Plugin\PluginInterface;
 
 interface TreeInterface
@@ -58,6 +60,24 @@ interface TreeInterface
      * @return string
      */
     public function getDataClass();
+    
+    /**
+     * Sets tree manager
+     * 
+     * Provide fluent interface
+     * 
+     * @param TreeManagerInterface $manager
+     * @return \Neutron\TreeBundle\Tree\TreeInterface
+     */
+    public function setManager(TreeManagerInterface $manager);
+    
+    /**
+     * Gets Tree manager.
+     * Object responsible for persisting nodes to storage.
+     * 
+     * @return \Neutron\TreeBundle\Model\TreeMananerInterface
+     */
+    public function getManager();
     
     /**
      * Adds tree plugin

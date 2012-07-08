@@ -13,6 +13,7 @@
 
     <services>
         <service id="neutron_tree.factory" class="%neutron_tree.factory.class%" scope="request">
+            <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="neutron_assetic" />
             <argument type="service" id="request" />
             <argument>%neutron_tree.path_to_jstree%</argument>

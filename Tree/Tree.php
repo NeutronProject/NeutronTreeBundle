@@ -18,6 +18,8 @@ namespace Neutron\TreeBundle\Tree;
  * @author Nikolay Georgiev <azazen09@gmail.com>
  * @since 1.0
  */
+use Neutron\TreeBundle\Model\TreeManagerInterface;
+
 use Gedmo\Exception\InvalidArgumentException;
 
 use Neutron\TreeBundle\Tree\Plugin\PluginInterface;
@@ -33,6 +35,11 @@ class Tree implements TreeInterface
      * @var string
      */
     protected $dataClass;
+    
+    /**
+     * @var \Neutron\TreeBundle\Model\TreeManagerInterface
+     */
+    protected $manager;
     
     /**
      * @var array<PluginInterface>
@@ -106,6 +113,22 @@ class Tree implements TreeInterface
         }
         
         return $this->dataClass;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::setManager()
+     */
+    public function setManager(TreeManagerInterface $manager)
+    {
+        $this->manager = $manager;
+        
+        return $this;
+    }
+    
+    public function getManager()
+    {
+        return $this->manager;
     }
     
     /**

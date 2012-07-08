@@ -22,6 +22,23 @@ class TreeController extends Controller
         return new Response(json_encode($data));
     }
     
+    public function moveAction($name)
+    {
+        $tree = $this->getTree($name);
+        $nodeId = $this->getRequest()->get('nodeId', false);
+        $refId = $this->getRequest()->get('refId', false);
+        $position = $this->getRequest()->get('position', false);
+        
+        $positions = array(
+            'before' => 'persistAsPrevSiblingOf',
+            'after' => 'persistAsNextSiblingOf',
+            'last' => 'persistAsLastChildOf',
+            'first' => 'persistAsFirstChildOf'
+        );
+        
+        return new Response(json_encode(array()));
+    }
+    
     private function getTree($name)
     {
         if (! $this->getRequest()->isXmlHttpRequest()) {
@@ -41,6 +58,8 @@ class TreeController extends Controller
     
     private function getNodes(TreeInterface $tree, $nodeId = null)
     {
+        $manager = $tree->getManager();
+        
         $class = $tree->getDataClass();
         
         if (!class_exists($class)){
@@ -68,13 +87,25 @@ class TreeController extends Controller
             }
             
             $isLeaf = ($repo->childCount($node, true) > 0) ? true : false;
+            $isRoot = $manager->isRoot($node);
+            
+            $class = '';
+            
+            if ($isRoot){
+                $class .= 'tree-root ';
+            }
+            
+            if ($isLeaf){
+                $class .= 'jstree-leaf ';
+            }
+            
             $data[] = array(
                 'data' => array(
                     'title' => $node->getTitle(),
                     'attr' => array('id' => 'node_' . $node->getId()),
                     'icon' => 'folder',
                 ),
-                'attr' => array('id' => 'li_' . $node->getId(), 'class' => $isLeaf ? '' : 'jstree-leaf'),
+                'attr' => array('id' => 'li_' . $node->getId(), 'class' => $class),
                 'metadata' => array(),
                 'state' => $isLeaf ? 'open' : 'closed',
                 'children' => $this->getNodes($tree, $node->getId())

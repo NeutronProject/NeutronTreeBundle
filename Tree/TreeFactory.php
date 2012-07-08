@@ -9,6 +9,10 @@
  */
 namespace Neutron\TreeBundle\Tree;
 
+use Doctrine\ORM\EntityManager;
+
+use Neutron\TreeBundle\Model\TreeManager;
+
 use Symfony\Component\HttpFoundation\Request;
 
 use Neutron\Bundle\AsseticBundle\Controller\AsseticController;
@@ -22,6 +26,11 @@ use Neutron\Bundle\AsseticBundle\Controller\AsseticController;
 class TreeFactory implements FactoryInterface
 {
 
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+    
     /**
      * @var \Neutron\Bundle\AsseticBundle\Controller\AsseticController
      */
@@ -44,8 +53,9 @@ class TreeFactory implements FactoryInterface
      * @param Request $request
      * @param string $path
      */
-    public function __construct(AsseticController $neutronAssetic, Request $request, $path)
+    public function __construct(EntityManager $em, AsseticController $neutronAssetic, Request $request, $path)
     {
+        $this->em = $em;
         $this->neutronAssetic = $neutronAssetic;
         $this->request = $request;
         $this->path = $path;
@@ -113,5 +123,16 @@ class TreeFactory implements FactoryInterface
         }
     
         return new $plugin($options);
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.FactoryInterface::createManager()
+     */
+    public function createManager($class)
+    {
+        $manager = new TreeManager($this->em, $class);
+        
+        return $manager;
     }
 }

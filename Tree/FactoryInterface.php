@@ -46,5 +46,14 @@ interface FactoryInterface
      * @throws \InvalidArgumentException
      */
     public function createPlugin($plugin);
+    
+    /**
+     * Creates tree manager instance
+     *
+     *
+     * @param string $class
+     * @return \Neutron\TreeBundle\Model\TreeManagerInterface
+     */
+    public function createManager($class);
 
 }

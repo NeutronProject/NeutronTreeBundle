@@ -8,4 +8,10 @@
         <default key="_controller">NeutronTreeBundle:Tree:data</default>
          <default key="_format">json</default>
     </route>
+    
+    <route id="neutron_tree_move" pattern="/_neutron_tree/move/{name}.{_format}">
+        <default key="_controller">NeutronTreeBundle:Tree:move</default>
+         <default key="_format">json</default>
+    </route>
+    
 </routes>
