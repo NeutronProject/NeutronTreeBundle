@@ -32,7 +32,12 @@ class Configuration implements ConfigurationInterface
     {
         $rootNode
             ->children()
-                ->scalarNode('path_to_jstree')->isRequired(true)->end()
+                ->arrayNode('resources')
+                    ->children()
+                        ->scalarNode('path_to_jstree')->isRequired(true)->end()
+                        ->scalarNode('path_to_jquery_cookie_js')->isRequired(true)->end()
+                    ->end()
+                ->end()
             ->end()
         ;
     }

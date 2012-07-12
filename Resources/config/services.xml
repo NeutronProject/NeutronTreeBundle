@@ -16,7 +16,7 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="neutron_assetic" />
             <argument type="service" id="request" />
-            <argument>%neutron_tree.path_to_jstree%</argument>
+            <argument>%neutron_tree.resources%</argument>
         </service>
 
         <service id="neutron_tree.tree_provider.container_aware" class="%neutron_tree.tree_provider.contaner_aware.class%">

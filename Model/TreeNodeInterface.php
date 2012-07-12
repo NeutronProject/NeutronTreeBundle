@@ -1,7 +1,7 @@
 <?php
-namespace Neutron\TreeBundle\Tree;
+namespace Neutron\TreeBundle\Model;
 
-interface TreeModelInterface
+interface TreeNodeInterface
 {
     public function getId();
     
@@ -13,6 +13,18 @@ interface TreeModelInterface
     
     public function getSlug();
     
+    public function setExternalUri($uri);
+    
+    public function getExternalUri();
+    
+    public function setLinkTarget($target);
+    
+    public function getLinkTarget();
+    
+    public function setType($type);
+    
+    public function getType();
+    
     public function setEnabled($bool);
   
     public function isEnabled();
@@ -21,7 +33,7 @@ interface TreeModelInterface
     
     public function isDisplayed();
     
-    public function setParent(TreeModelInterface $parent = null);
+    public function setParent(TreeNodeInterface $parent = null);
     
     public function getParent();
 }

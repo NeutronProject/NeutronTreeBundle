@@ -3,6 +3,7 @@ jQuery(document).ready(function() {
 		var options = jQuery.parseJSON(jQuery(this).text()); 
 		console.log(options);
         var el = jQuery(this).prev();
+        var moving = false;
         
 		el.jstree({
 			"json_data" : {
@@ -69,16 +70,25 @@ jQuery(document).ready(function() {
 							$items._update._disabled = true;
 							$items._delete._disabled = true;
 						}
+						
+						if(typeof(options.plugins.types) == 'object'){
+							var pluginTypeOpts = options.plugins.types[node.attr('rel')];
+							
+							if(typeof(pluginTypeOpts) == 'object'){
+								$items._create._disabled = pluginTypeOpts.disable_create_btn;
+								$items._update._disabled = pluginTypeOpts.disable_update_btn;
+								$items._delete._disabled = pluginTypeOpts.disable_delete_btn;
+							}
+							
+						}
+						
+						
+						
 					}
 
 					return items;
 				}
 				
-			},
-			'dnd': {
-				'drop_finish': function(data){
-					alert('');
-				}
 			},
 			'crrm' : {
 				'move': {
@@ -92,51 +102,64 @@ jQuery(document).ready(function() {
 							return false;
 						}
 				
-						return true;
+						return (moving == false);
 					}
 				}
 			},
-			"plugins" : jQuery.merge(['json_data', 'themes', 'dnd', 'crrm'], options.enabledPlugins)
+			'types': {
+				'max_depth': -2,
+				'max_children': -2,
+				'valid_children': ['root'],
+				'types': options.plugins.types,
+			},
+			"plugins" : jQuery.merge(['json_data'], options.enabledPlugins)
 		});
 		
-		el.bind("move_node.jstree", function (e, data) {		
-			var node_id = data.rslt.o.attr("id").replace('li_', '');
-			var ref_id = data.rslt.r.attr("id").replace('li_', '');
-			var position = data.rslt.p;
+		if(jQuery.inArray('crrm', options.enabledPlugins)){
 			
-			jQuery.ajax({
-				async : true,
-				type: 'POST',
-				url: options.move_uri, 
-				data : {  
-					"nodeId" : node_id, 
-					"refId" : ref_id,
-					"position" : position
-				},
-				beforeSend: function() {
-					timeout = setTimeout(function(){
+			el.bind("move_node.jstree", function (e, data) {		
+				moving = true;
+				
+				var node_id = data.rslt.o.attr("id").replace('li_', '');
+				var ref_id = data.rslt.r.attr("id").replace('li_', '');
+				var operation = data.rslt.p;
+				
+				var treeErrorEvent = jQuery.Event('neutron.tree.event.error');
+				treeErrorEvent.name = options.name;
+				
+				jQuery.ajax({
+					async : true,
+					type: 'POST',
+					url: options.move_uri, 
+					data : {  
+						"nodeId" : node_id, 
+						"refId" : ref_id,
+						"operation" : operation
+					},
+					error : function(jqXHR, textStatus, errorThrown) {
+						jQuery.jstree.rollback(data.rlbk);
+						treeErrorEvent.response = null;
+						treeErrorEvent.message = errorThrown;
+						jQuery("body").trigger(treeErrorEvent);						
+					},
+					complete : function() {
+						moving = false;
+					},
+					success : function(response) {
+						if (response == undefined || response == null || response.success != true){
+							jQuery.jstree.rollback(data.rlbk);
+							treeErrorEvent.response = response;
+							treeErrorEvent.message = 'Application Error';
+							jQuery("body").trigger(treeErrorEvent);		
+							return ;
+						}					
 						
-					}, 500);
-				},
-				error : function() {
-					alert('error');								
-				},
-				complete : function() {
-					clearTimeout(timeout);
 					
-					
-				},
-				success : function(response) {
-					if (response == undefined || response == null){
-						alert('error');
-						return ;
-					}					
-					
-					if (response.error) {
-						
 					}
-				}
+				});
 			});
-		});
+		}
+		
+		
 	});
 });

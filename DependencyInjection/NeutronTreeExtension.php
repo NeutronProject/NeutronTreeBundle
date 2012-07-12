@@ -25,6 +25,6 @@ class NeutronTreeExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         
-        $container->setParameter('neutron_tree.path_to_jstree', rtrim($config['path_to_jstree']), '/');
+        $container->setParameter('neutron_tree.resources', $config['resources']);
     }
 }

@@ -25,18 +25,36 @@ class TreeController extends Controller
     public function moveAction($name)
     {
         $tree = $this->getTree($name);
+        $manager = $tree->getManager();
+        
         $nodeId = $this->getRequest()->get('nodeId', false);
         $refId = $this->getRequest()->get('refId', false);
-        $position = $this->getRequest()->get('position', false);
+        $operation = $this->getRequest()->get('operation', false);
         
-        $positions = array(
+        $node = $manager->findNodeBy(array('id' => $nodeId));
+        
+        $refNode = $manager->findNodeBy(array('id' => $refId));
+        
+        if (!$node || !$refNode){
+            throw new \InvalidArgumentException('Node or RefNode is not found!');
+        }
+        
+        $operations = array(
             'before' => 'persistAsPrevSiblingOf',
-            'after' => 'persistAsNextSiblingOf',
-            'last' => 'persistAsLastChildOf',
-            'first' => 'persistAsFirstChildOf'
+            'after'  => 'persistAsNextSiblingOf',
+            'last'   => 'persistAsLastChildOf',
+            'first'  => 'persistAsFirstChildOf'
         );
         
-        return new Response(json_encode(array()));
+        if (!array_key_exists($operation, $operations)){
+            throw new \InvalidArgumentException(sprintf('Operation "%s" is not allowed!',$operation));
+        }
+        
+        $method = $operations[$operation];
+        
+        $manager->$method($node, $refNode);
+        
+        return new Response(json_encode(array('success' => true)));
     }
     
     private function getTree($name)
@@ -59,34 +77,17 @@ class TreeController extends Controller
     private function getNodes(TreeInterface $tree, $nodeId = null)
     {
         $manager = $tree->getManager();
-        
-        $class = $tree->getDataClass();
-        
-        if (!class_exists($class)){
-            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist', $class));
-        }
-        
-        $em = $this->getDoctrine()->getEntityManager();
-        $repo = $em->getRepository($class);
+
         $data = array();
         
         if ($nodeId === 0){
-            $roots = $repo->getRootNodes();
+            $node = $manager->getRoot();
             
-            if (count($roots) == 0){
-                $entity = new $class;
-                $entity->setTitle($tree->getRootName());
-                $entity->setSlug($tree->getRootName());
-                $em->persist($entity);
-                $em->flush($entity);
-                
-                $node = $entity;
-                
-            } else {
-                $node = $roots[0];
-            }
+            if (!$node){
+                throw new \RuntimeException('Root node is not defined. Please use command neutron:admin:create-tree');
+            } 
             
-            $isLeaf = ($repo->childCount($node, true) > 0) ? true : false;
+            $isLeaf = $manager->isLeaf($node);
             $isRoot = $manager->isRoot($node);
             
             $class = '';
@@ -105,7 +106,7 @@ class TreeController extends Controller
                     'attr' => array('id' => 'node_' . $node->getId()),
                     'icon' => 'folder',
                 ),
-                'attr' => array('id' => 'li_' . $node->getId(), 'class' => $class),
+                'attr' => array('id' => 'li_' . $node->getId(), 'class' => $class, 'rel' => $node->getType()),
                 'metadata' => array(),
                 'state' => $isLeaf ? 'open' : 'closed',
                 'children' => $this->getNodes($tree, $node->getId())
@@ -115,12 +116,12 @@ class TreeController extends Controller
             
         } 
         
-        $node = $repo->findOneById($nodeId);
+        $node = $manager->findNodeBy(array('id' => $nodeId));
         
-        $children = $repo->children($node, true);
+        $children = $manager->getChildren($node);
         
         foreach ($children as $child){
-            $isLeaf = ($repo->childCount($child, true) > 0) ? true : false;
+            $isLeaf = $manager->isLeaf($child);
             
             $data[] = array(
                 'data' => array(
@@ -128,7 +129,7 @@ class TreeController extends Controller
                     'attr' => array('id' => 'node_' . $child->getId()),
                     'icon' => 'folder',
                 ),
-                'attr' => array('id' => 'li_' . $child->getId(), 'class' => $isLeaf ? '' : 'jstree-leaf'),
+                'attr' => array('id' => 'li_' . $child->getId(), 'class' => $isLeaf ? '' : 'jstree-leaf', 'rel' => $child->getType()),
                 'metadata' => array(),
                 'state' => $isLeaf ? 'closed' : 'open',
           
@@ -137,4 +138,6 @@ class TreeController extends Controller
         
         return $data;
     }
+    
+
 }

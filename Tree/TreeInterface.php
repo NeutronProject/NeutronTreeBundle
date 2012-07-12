@@ -41,26 +41,7 @@ interface TreeInterface
      * @return string
      */
     public function getName();
-    
-    /**
-     * Sets data class
-     * Must implement \Neutron\TreeBundle\Tree\NodeInterface
-     * 
-     * Provides a fluent interface
-     * 
-     * @param string $class
-     * @return \Neutron\TreeBundle\Tree\TreeInterface
-     */
-    public function setDataClass($class);
-    
-    /**
-     * Gets data class
-     * 
-     * @throws \LogicException
-     * @return string
-     */
-    public function getDataClass();
-    
+
     /**
      * Sets tree manager
      * 
@@ -157,23 +138,6 @@ interface TreeInterface
      * @return \Neutron\TreeBundle\Tree\TreeInterface
      */
     public function clearPlugins();
- 
-    /**
-     * Sets root name
-     * 
-     * Provides a fluent interface
-     * 
-     * @param string $name
-     * @return \Neutron\TreeBundle\Tree\TreeInterface
-     */
-    public function setRootName($name);
-    
-    /**
-     * Gets root name
-     * 
-     * @return string
-     */
-    public function getRootName();
     
     /**
      * Enables jstree option progressive_render

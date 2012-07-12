@@ -47,11 +47,6 @@ class Tree implements TreeInterface
     protected $plugins = array();
     
     /**
-     * @var string
-     */
-    protected $rootName = 'Root';
-    
-    /**
      * @var boolean
      */
     protected $progressiveRender = false;
@@ -93,30 +88,6 @@ class Tree implements TreeInterface
     
     /**
      * (non-PHPdoc)
-     * @see Neutron\TreeBundle\Tree.TreeInterface::setDataClass()
-     */
-    public function setDataClass($class)
-    {
-        $this->dataClass = (string) $class;
-        
-        return $this;
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * @see Neutron\TreeBundle\Tree.TreeInterface::getDataClass()
-     */
-    public function getDataClass()
-    {
-        if (null === $this->dataClass){
-            throw new \LogicException('Option:dataClass is not set!');
-        }
-        
-        return $this->dataClass;
-    }
-    
-    /**
-     * (non-PHPdoc)
      * @see Neutron\TreeBundle\Tree.TreeInterface::setManager()
      */
     public function setManager(TreeManagerInterface $manager)
@@ -145,8 +116,8 @@ class Tree implements TreeInterface
      * @see Neutron\TreeBundle\Tree.TreeInterface::addPlugin()
      */
     public function addPlugin(PluginInterface $plugin)
-    {
-        if ($this->hasPlugin($plugin->getName())){
+    {   
+        if ($this->hasPlugin($plugin->getName())){ 
             throw new \InvalidArgumentException(
                 sprintf('Tree plugin: "%s" already exists in the stack', $plugin->getName())
             );
@@ -244,26 +215,6 @@ class Tree implements TreeInterface
         $this->plugins = array();
         
         return $this;
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * @see Neutron\TreeBundle\Tree.TreeInterface::setRootName()
-     */
-    public function setRootName($name)
-    {
-        $this->rootName = (string) $name;
-        
-        return $this;
-    }
-    
-    /**
-     * (non-PHPdoc)
-     * @see Neutron\TreeBundle\Tree.TreeInterface::getRootName()
-     */
-    public function getRootName()
-    {
-        return $this->rootName;
     }
     
     /**
