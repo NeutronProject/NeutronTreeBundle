@@ -84,7 +84,7 @@ class TreeController extends Controller
             $node = $manager->getRoot();
             
             if (!$node){
-                throw new \RuntimeException('Root node is not defined. Please use command neutron:admin:create-tree');
+                throw new \RuntimeException('Root node is not defined. Please use command neutron:admin:tree');
             } 
             
             $isLeaf = $manager->isLeaf($node);
@@ -118,7 +118,7 @@ class TreeController extends Controller
         
         $node = $manager->findNodeBy(array('id' => $nodeId));
         
-        $children = $manager->getChildren($node);
+        $children = $manager->getChildren($node, $tree->isTranslatableEnabled());
         
         foreach ($children as $child){
             $isLeaf = $manager->isLeaf($child);

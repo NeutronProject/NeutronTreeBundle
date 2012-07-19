@@ -57,6 +57,11 @@ class Tree implements TreeInterface
     protected $progressiveUnload = false;
     
     /**
+     * @var boolean
+     */
+    protected $translatable = false;
+    
+    /**
      * Construct
      * 
      * @param string $name
@@ -255,6 +260,26 @@ class Tree implements TreeInterface
     public function isProgressiveUnloadEnabled()
     {
         return $this->progressiveUnload;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::enableTranslatable()
+     */
+    public function enableTranslatable($bool)
+    {
+        $this->translatable = (bool) $bool;
+        
+        return $this;
+    }
+    
+    /**
+     * (non-PHPdoc)
+     * @see Neutron\TreeBundle\Tree.TreeInterface::isTranslatableEnabled()
+     */
+    public function isTranslatableEnabled()
+    {
+        return $this->translatable;
     }
     
     /**

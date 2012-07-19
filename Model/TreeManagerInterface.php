@@ -11,7 +11,7 @@ interface TreeManagerInterface
     
     public function getRoot();
     
-    public function getChildren(TreeNodeInterface $node);
+    public function getChildren(TreeNodeInterface $node, $translated = false);
     
     public function createNode();
     

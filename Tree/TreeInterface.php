@@ -174,5 +174,23 @@ interface TreeInterface
      * @return boolean
      */
     public function isProgressiveUnloadEnabled();
+    
+    /**
+     * Enables translatable extension
+     * 
+     * Defauls to false
+     * 
+     * Provides a fluent interface
+     * 
+     * @param boolean $bool
+     */
+    public function enableTranslatable($bool);
+    
+    /**
+     * Returns if translatable is enabled
+     * 
+     * @return boolean
+     */
+    public function isTranslatableEnabled();
   
 }

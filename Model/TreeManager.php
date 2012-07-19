@@ -54,9 +54,18 @@ class TreeManager implements TreeManagerInterface
         }
     }
     
-    public function getChildren(TreeNodeInterface $node)
+    public function getChildren(TreeNodeInterface $node, $translated = false)
     {
-        return $this->repository->children($node, true);
+        $query = $this->repository->getChildrenQuery($node, true);
+        
+        if ($translated){
+            $query->setHint(
+                \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+                'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+            );
+        }
+        
+        return $query->getResult();
     }
     
     public function persistNode(TreeNodeInterface $node)
@@ -106,4 +115,5 @@ class TreeManager implements TreeManagerInterface
         $this->repository->persistAsNextSiblingOf($node, $sibling);
         $this->em->flush();
     }
+    
 }
