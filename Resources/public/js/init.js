@@ -127,6 +127,9 @@ jQuery(document).ready(function() {
 				var treeErrorEvent = jQuery.Event('neutron.tree.event.error');
 				treeErrorEvent.name = options.name;
 				
+				var treeCompleteEvent = jQuery.Event('neutron.tree.event.complete');
+				treeCompleteEvent.name = options.name;
+				
 				jQuery.ajax({
 					async : true,
 					type: 'POST',
@@ -144,6 +147,7 @@ jQuery(document).ready(function() {
 					},
 					complete : function() {
 						moving = false;
+						jQuery("body").trigger(treeCompleteEvent);	
 					},
 					success : function(response) {
 						if (response == undefined || response == null || response.success != true){
