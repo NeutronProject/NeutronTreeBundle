@@ -7,6 +7,7 @@
     
     <parameters>
         <parameter key="neutron_tree.factory.class">Neutron\TreeBundle\Tree\TreeFactory</parameter>
+        <parameter key="neutron_tree.manager.factory.class">Neutron\TreeBundle\Model\TreeManagerFactory</parameter>
         <parameter key="neutron_tree.tree_provider.contaner_aware.class">Neutron\TreeBundle\Tree\Provider\ContainerAwareProvider</parameter>
         <parameter key="neutron_tree.twig.tree_extension.class">Neutron\TreeBundle\Twig\Extension\TreeExtension</parameter>
     </parameters>
@@ -29,6 +30,10 @@
         <service id="neutron_tree.twig.tree_extension" class="%neutron_tree.twig.tree_extension.class%">
             <argument type="service" id="service_container" />
             <tag name="twig.extension"/>
+        </service>
+        
+        <service id="neutron_tree.manager.factory" class="%neutron_tree.manager.factory.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
         
     </services>
