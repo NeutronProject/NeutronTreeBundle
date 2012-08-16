@@ -71,12 +71,12 @@ class TreeManager implements TreeManagerInterface
     public function persistNode(TreeNodeInterface $node)
     {
         $this->em->persist($node);
-        $this->em->flush($node);
+        $this->em->flush();
     }
     
     public function updateNode(TreeNodeInterface $node)
     {
-        $this->em->flush($node);
+        $this->em->flush();
     }
     
     public function deleteNode(TreeNodeInterface $node)

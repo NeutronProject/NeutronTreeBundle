@@ -13,10 +13,6 @@ interface TreeNodeInterface
     
     public function getSlug();
     
-    public function setExternalUri($uri);
-    
-    public function getExternalUri();
-    
     public function setLinkTarget($target);
     
     public function getLinkTarget();
