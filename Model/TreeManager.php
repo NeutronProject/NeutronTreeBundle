@@ -1,6 +1,10 @@
 <?php
 namespace Neutron\TreeBundle\Model;
 
+use Symfony\Component\Security\Acl\Permission\MaskBuilder;
+
+use Neutron\ComponentBundle\Doctrine\ORM\Query\TreeWalker\AclWalker;
+
 use Doctrine\ORM\EntityManager;
 
 use Neutron\TreeBundle\Model\TreeNodeInterface;
@@ -54,17 +58,20 @@ class TreeManager implements TreeManagerInterface
         }
     }
     
-    public function getChildren(TreeNodeInterface $node, $translated = false)
+    public function getChildrenQueryBuilder()
+    {
+        return $this->repository->getChildrenQueryBuilder();
+    }
+    
+    public function getChildren(TreeNodeInterface $node)
     {
         $query = $this->repository->getChildrenQuery($node, true);
-        
-        if ($translated){
-            $query->setHint(
-                \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
-                'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
-            );
-        }
-        
+
+        $query->setHint(
+            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+        );
+                
         return $query->getResult();
     }
     
