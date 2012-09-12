@@ -118,7 +118,7 @@ class TreeController extends Controller
         
         $node = $manager->findNodeBy(array('id' => $nodeId));
         
-        $children = $manager->getChildren($node, $tree->isTranslatableEnabled());
+        $children = $manager->getChildren($node);
         
         foreach ($children as $child){
             $isLeaf = $manager->isLeaf($child);
